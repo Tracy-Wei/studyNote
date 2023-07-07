@@ -1,3 +1,5 @@
+https://img-blog.csdnimg.cn/3287e9b492354bfd8edb7ba531c8a801.png
+
 在 ci 中如果要在一个项目中分两个子项目的话在对应项目的 editproject 中添加 Subprojects（子项目），如例子中 busybee 分前台和后台两个页面项目时候，开一个总的叫 busybee.web，然后在这个基础上开两个子项目，也就是 user 和 managerment
 
 配 ci 的一些配置，需要配好一些：
