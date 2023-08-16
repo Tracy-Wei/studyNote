@@ -354,6 +354,27 @@ C# 不支持多重继承。但是，您可以使用接口来实现多重继承�
 
 3.类定义前面放置关键字 sealed，可以将类声明为密封类。当一个类被声明为 sealed 时，它不能被继承。抽象类不能被声明为 sealed。
 
+## 运算符重载
+
+重载运算符是具有特殊名称的函数，是通过关键字 operator 后跟运算符的符号来定义的。与其他函数一样，重载运算符有返回类型和参数列表。
+
+```javascript
+public static Box operator+ (Box b, Box c)
+{
+   Box box = new Box();
+   box.length = b.length + c.length;
+   box.breadth = b.breadth + c.breadth;
+   box.height = b.height + c.height;
+   return box;
+}
+```
+上面的函数为用户自定义的类 Box 实现了加法运算符（+）。它把两个 Box 对象的属性相加，并返回相加后的 Box 对象。
+
+![image](https://github.com/Tracy-Wei/studyNote/assets/109784975/0433d824-6de7-41a2-96ea-d5ad8f44dc8f)
+
+
+## C# 接口（Interface）
+
 
 
 
