@@ -218,6 +218,14 @@ public class  DeBugInfo:System.Attribute
     this.lastReview = d;
   }
 
+  public int BugNo
+  {
+    get
+    {
+      return bugNo;
+    }
+  }
+
   public string Developer
   {
     get
