@@ -161,8 +161,11 @@ namespace BugFixApplication
       {
         Rectangle r = new Rectangle(4.5,7.5);
         r.Display();
+
+        // 获取 Rectangle 类型的信息
         Type type = typeof(Rectangle);
-        
+
+        // 遍历 Rectangle 类上的自定义特性，并打印特性信息
         foreach (Object attributes in type.GetCustomAttributes(false))
         {
           DeBugInfo dbi = (DeBugInfo)attributes;
@@ -175,6 +178,7 @@ namespace BugFixApplication
           }
         }
 
+        // 遍历 Rectangle 类中的每个方法，查找并打印方法上的特性信息
         foreach (MethodInfo m in type.GetMethods())
         {
           foreach(Attribute a in m.GetCustomAttributes(true))
