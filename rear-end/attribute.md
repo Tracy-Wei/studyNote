@@ -87,7 +87,7 @@ public class DeBugInfo : System.Attribute
   // 公有属性 BugNo，用于获取 Bug 号码
   public int BugNo
   {
-      get
+      get  // get和set，用于控制属性值的读取和设置行为。在这里，只定义了get访问器，所以该属性是只读的，不能在外部进行设置。
       {
           return bugNo;
       }
