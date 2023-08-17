@@ -14,13 +14,47 @@ element
 这些特性是由 C# 和 .NET 框架预定义的，用于提供特定的行为或信息。
 
 .Net 框架提供了三种预定义特性：AttributeUsage，Conditional，Obsolete
- 
+
+#### AttributeUsage
+预定义特性 AttributeUsage 描述了如何使用一个自定义特性类。它规定了特性可应用到的项目的类型。
+
+规定该特性的语法如下：
 ```javascript
 [AttributeUsage(
    validon,   // 规定特性可被放置的语言元素
    AllowMultiple=allowmultiple,   // 为该特性的 AllowMultiple 属性（property）提供一个布尔值
    Inherited=inherited   // 为该特性的 Inherited 属性（property）提供一个布尔值。
 )]
+```
+
+#### Conditional
+这个预定义特性标记了一个条件方法，其执行依赖于指定的预处理标识符。
+
+它会引起方法调用的条件编译，取决于指定的值，比如 Debug 或 Trace。例如，当调试代码时显示变量的值。
+
+规定该特性的语法如下：
+```javascript
+[Conditional(
+   conditionalSymbol
+)]
+
+//例如：[Conditional("DEBUG")]
+```
+
+#### Obsolete
+这个预定义特性标记了不应被使用的程序实体。它可以让您通知编译器丢弃某个特定的目标元素。例如，当一个新方法被用在一个类中，但是您仍然想要保持类中的旧方法，您可以通过显示一个应该使用新方法，而不是旧方法的消息，来把它标记为 obsolete（过时的）。
+
+规定该特性的语法如下：
+```javascript
+[Obsolete(
+   message
+)]
+[Obsolete(
+   message,   // 是一个字符串，描述项目为什么过时以及该替代使用什么。
+   iserror   // 是一个布尔值。如果该值为 true，编译器应把该项目的使用当作一个错误。默认值是 false（编译器生成一个警告）。
+)]
+
+//例如：[Obsolete("Don't use OldMethod, use NewMethod instead", true)]
 ```
 
 ### 创建自定义特性（Attribute）
