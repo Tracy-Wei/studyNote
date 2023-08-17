@@ -372,10 +372,148 @@ public static Box operator+ (Box b, Box c)
 
 ![image](https://github.com/Tracy-Wei/studyNote/assets/109784975/0433d824-6de7-41a2-96ea-d5ad8f44dc8f)
 
+通常情况下，类需要进行类似于加法、减法、乘法、除法等运算操作时才会使用运算符重载。
+
+目的是使代码更加易读和语义清晰。如果类表示了某种数学或逻辑概念，并且对于这些概念的运算操作有明确的语义，那么运算符重载可能会更有意义。
+
+```javascript
+public static Box operator+ (Box b, Box c)
+{
+   Box box = new Box();
+   box.length = b.length + c.length;
+   box.breadth = b.breadth + c.breadth;
+   box.height = b.height + c.height;
+   return box;
+}
+```
 
 ## C# 接口（Interface）
 
+接口定义了所有类继承接口时应遵循的语法合同。接口定义了语法合同 "是什么" 部分，派生类定义了语法合同 "怎么做" 部分。
 
+### 定义接口: InterfaceImplementer.cs
 
+接口使用 interface 关键字声明，它与类的声明类似。接口声明默认是 public 的。下面是一个接口声明的实例：
+```javascript
+using System;
+
+interface IParentInterface
+{
+    void ParentInterfaceMethod();
+}
+
+interface IMyInterface : IParentInterface
+{
+    // 接口成员
+    void MethodToImplement();
+}
+
+class InterfaceImplementer : IMyInterface
+{
+    static void Main()
+    {
+        InterfaceImplementer iImp = new InterfaceImplementer();
+        iImp.MethodToImplement();
+        iImp.ParentInterfaceMethod();
+    }
+
+    public void MethodToImplement()
+    {
+        Console.WriteLine("MethodToImplement() called.");
+    }
+
+    public void ParentInterfaceMethod()
+    {
+        Console.WriteLine("ParentInterfaceMethod() called.");
+    }
+}
+```
+输出结果：
+```javascript
+MethodToImplement() called.
+ParentInterfaceMethod() called.
+```
+
+继承接口后，我们需要实现接口的方法 MethodToImplement() , 方法名必须与接口定义的方法名一致。
+
+语法注意：口命令以 I 字母开头，这个接口只有一个方法 MethodToImplement()，可以按照需求设置参数和返回值。
+
+## C# 预处理器指令
+
+预处理器指令都是以 # 开始，它不是语句，所以不以分号（;）结束。
+
+例如：
+```javascript
+#define PI 
+using System;
+namespace PreprocessorDAppl
+{
+   class Program
+   {
+      static void Main(string[] args)
+      {
+         #if (PI)
+            Console.WriteLine("PI is defined"); //PI不存在，则这条语句不编译
+         #else
+            Console.WriteLine("PI is not defined"); //PI存在，则这条语句不编译
+         #endif
+         Console.ReadKey();
+      }
+   }
+}
+```
+
+## C# 异常处理
+
+try：一个 try 块标识了一个将被激活的特定的异常的代码块。后跟一个或多个 catch 块。
+
+catch：程序通过异常处理程序捕获异常。catch 关键字表示异常的捕获。
+
+finally：finally 块用于执行给定的语句，不管异常是否被抛出都会执行。例如，如果您打开一个文件，不管是否出现异常文件都要被关闭。
+
+throw：当问题出现时，程序抛出一个异常。使用 throw 关键字来完成。
+
+C# 中的异常类主要是直接或间接地派生于 System.Exception 类。System.ApplicationException 和 System.SystemException 类是派生于 System.Exception 类的异常类。
+
+System.ApplicationException 类支持由应用程序生成的异常。所以程序员定义的异常都应派生自该类。
+
+System.SystemException 类是所有预定义的系统异常的基类。
+
+```javascript
+using System;
+namespace ErrorHandlingApplication
+{
+    class DivNumbers
+    {
+        int result;
+        DivNumbers()
+        {
+            result = 0;
+        }
+        public void division(int num1, int num2)
+        {
+            try
+            {
+                result = num1 / num2;
+            }
+            catch (DivideByZeroException e)
+            {
+                Console.WriteLine("Exception caught: {0}", e);
+            }
+            finally
+            {
+                Console.WriteLine("Result: {0}", result);
+            }
+
+        }
+        static void Main(string[] args)
+        {
+            DivNumbers d = new DivNumbers();
+            d.division(25, 0);
+            Console.ReadKey();
+        }
+    }
+}
+```
 
 
