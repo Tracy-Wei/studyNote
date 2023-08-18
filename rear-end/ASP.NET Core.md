@@ -25,6 +25,8 @@ dotnet dev-certs https --trust
 
 ASP.NET Core 的依赖注入（DI）容器提供了三种生命周期：瞬时（Transient）、作用域（Scoped）和单例（Singleton）。这些生命周期影响着服务实例的创建和销毁方式，进而影响着应用程序的性能和可靠性。ASP.NET Core 的依赖注入生命周期，包括每种生命周期的特点、如何选择合适的生命周期、如何实现自定义的生命周期等。
 
+![image](https://github.com/Tracy-Wei/studyNote/assets/109784975/f7fd89b4-704c-45e1-9a47-100ebff3afe0)
+
 ### 執行流程
 ![image](https://github.com/Tracy-Wei/studyNote/assets/109784975/9646dd57-71d3-42c4-9be9-0a359516d260)
 
