@@ -1,12 +1,14 @@
 ## c#简介，结构与语法
+
 ### c#程序包括：
+
 1.命名空间声明（Namespace declaration）
 
-2.一个class 
+2.一个 class
 
-3.class属性 
+3.class 属性
 
-4.一个main方法 
+4.一个 main 方法
 
 5.语句（statements）&表达式（Expressions）
 
@@ -15,6 +17,7 @@
 ### c#程序后缀是.cs
 
 ### c#一个简单写法结构
+
 ```javascript
 using System;
 namespace HelloWorldApplication
@@ -32,44 +35,46 @@ namespace HelloWorldApplication
     }
 }
 ```
-using 关键字用于在程序中包含 System 命名空间。 一个程序一般有多个 using 语句。
 
-namespace 声明。一个 namespace 里包含了一系列的类。
+using  关键字用于在程序中包含  System  命名空间。 一个程序一般有多个  using  语句。
 
-class 声明。类 HelloWorld 包含了程序使用的数据和方法声明。
+namespace  声明。一个  namespace  里包含了一系列的类。
 
-定义了 Main 方法，是所有 C# 程序的 入口点。Main 方法说明当执行时 类将做什么动作。
+class  声明。类  HelloWorld  包含了程序使用的数据和方法声明。
 
-Console.ReadKey(); 是针对 VS.NET 用户的。这使得程序会等待一个按键的动作，防止程序从 Visual Studio .NET 启动时屏幕会快速运行并关闭。
+定义了  Main  方法，是所有 C# 程序的   入口点。Main  方法说明当执行时 类将做什么动作。
 
+Console.ReadKey();  是针对 VS.NET 用户的。这使得程序会等待一个按键的动作，防止程序从 Visual Studio .NET 启动时屏幕会快速运行并关闭。
 
 ### 语法注意！
+
 1.C# 是大小写敏感的。
 
 2.所有的语句和表达式必须以分号（;）结尾。
 
-3.程序的执行从 Main 方法开始 
+3.程序的执行从 Main 方法开始
 
 4.与 Java 不同的是，文件名可以不同于类的名称。
 
 ### 标识符是用来识别类、变量、函数或任何其它用户定义的项目:
-1.标识符必须以字母、下划线或 @ 开头，后面可以跟一系列的字母、数字（ 0 - 9 ）、下划线（ _ ）、@
+
+1.标识符必须以字母、下划线或  @  开头，后面可以跟一系列的字母、数字（ 0 - 9 ）、下划线（ \_ ）、@
 
 2.标识符中的第一个字符不能是数字
 
-3.标识符必须不包含任何嵌入的空格或符号，比如 ? - +! # % ^ & * ( ) [ ] { } . ; : " ' / \
+3.标识符必须不包含任何嵌入的空格或符号，比如 ? - +! # % ^ & \* ( ) [ ] { } . ; : " ' / \
 
 4.标识符不能是 C# 关键字。除非它们有一个 @ 前缀。 例如，@if 是有效的标识符，但 if 不是，因为 if 是关键字
 
 5.标识符必须区分大小写。大写字母和小写字母被认为是不同的字母
 
-6.不能与C#的类库名称相同
-
+6.不能与 C#的类库名称相同
 
 ## 数据结构
+
 分为：1.值类型 2.引用类型 3.指针类型
 
-### 值类型： 例如int、char、float
+### 值类型：  例如 int、char、float
 
 ```javascript
 using System;
@@ -93,13 +98,13 @@ WriteLine()：属于在控制台输出
 
 ReadLine()：用于接收来自用户的输入，只接受字符串格式的数据。
 
-### 引用类型：例如object、dynamic 和 string
+### 引用类型：例如 object、dynamic  和  string
 
 引用类型可以指向一个内存位置，如果多个变量引用相同的数据（即它们都持有相同的内存地址），么当一个变量改变了该数据的值时，其他引用相同数据的变量也会自动反映这种值的变化。
 
 ### 对象类型
 
-对象（Object）类型 是 C# 通用类型系统（Common Type System - CTS）中所有数据类型的终极基类。
+对象（Object）类型   是 C# 通用类型系统（Common Type System - CTS）中所有数据类型的终极基类。
 
 所以对象（Object）类型可以被分配任何其他类型（值类型、引用类型、预定义类型或用户自定义类型）的值。（在分配值之前，需要先进行类型转换）
 
@@ -114,17 +119,18 @@ ReadLine()：用于接收来自用户的输入，只接受字符串格式的数�
 ![image](https://github.com/Tracy-Wei/studyNote/assets/109784975/b3c09111-200d-4006-ac4b-471248e83783)
 
 ### 字符串（String）类型
+
 1."runoob.com"
 
 2.@"runoob.com"
 
 3. @"C:\Windows"
-   
+
 4.以任意换行，换行符及缩进空格都计算在字符串长度之内
 
 ### 指针类型（Pointer types）
 
-写法：type* identifier;
+写法：type\* identifier;
 
 ## 类型转换
 
@@ -138,6 +144,7 @@ ReadLine()：用于接收来自用户的输入，只接受字符串格式的数�
 int num;
 num = Convert.ToInt32(Console.ReadLine());
 ```
+
 Convert.ToInt32()：把用户输入的数据转换为 int 数据类型。
 
 ### C# 中的 Lvalues 和 Rvalues
@@ -171,41 +178,45 @@ protected internal：访问限于当前程序集或派生自包含类的类型�
 ##方法
 
 定义方法的语法：
+
 ```javascript
 <Access Specifier> <Return Type> <Method Name>(Parameter List)
 {
    Method Body
 }
 ```
+
 ![image](https://github.com/Tracy-Wei/studyNote/assets/109784975/4a5278e2-afc4-4e19-8f22-0bf7af763e83)
 
 ## 可空类型
 
-? 单问号用于对 int、double、bool 等无法直接赋值为 null 的数据类型进行 null 的赋值，意思是这个数据类型是 Nullable（可空） 类型的。
+?  单问号用于对  int、double、bool  等无法直接赋值为 null 的数据类型进行 null 的赋值，意思是这个数据类型是 Nullable（可空） 类型的。
 
-?? 双问号用于判断一个变量在为 null 的时候返回一个指定的值。
+??  双问号用于判断一个变量在为 null 的时候返回一个指定的值。
 
-声明一个 nullable 类型（可空类型）的语法如下：
+声明一个  nullable  类型（可空类型）的语法如下：
+
 ```javascript
 < data_type> ? <variable_name> = null;
 ```
 
 ??合并运算符：
+
 ```javascript
-num3 = num1 ?? 5.34;      // num1 如果为空值则返回 5.34
+num3 = num1 ?? 5.34; // num1 如果为空值则返回 5.34
 ```
 
 ## 数组
 
 ![image](https://github.com/Tracy-Wei/studyNote/assets/109784975/17ba9eeb-cec8-4653-9c3c-58bc4dd3e844)
 
-### forearch循环
+### forearch 循环
 
 ![image](https://github.com/Tracy-Wei/studyNote/assets/109784975/9c8d9d57-adf7-4a8b-9009-4c81721d11ce)
 
 ## 结构体
 
-C# 中，结构体是值类型数据结构。它使得一个单一变量可以存储各种数据类型的相关数据。struct 关键字用于创建结构体。结构体是用来代表一个记录。
+C# 中，结构体是值类型数据结构。它使得一个单一变量可以存储各种数据类型的相关数据。struct  关键字用于创建结构体。结构体是用来代表一个记录。
 
 为了定义一个结构体，您必须使用 struct 语句。struct 语句为程序定义了一个带有多个成员的新的数据类型。
 
@@ -215,8 +226,7 @@ struct Books{
 }
 ```
 
-类和结构有以下几个基本的不同点：
-1.类是引用类型，结构是值类型。
+类和结构有以下几个基本的不同点： 1.类是引用类型，结构是值类型。
 
 2.结构不支持继承。
 
@@ -225,6 +235,7 @@ struct Books{
 结构体中声明的字段无法赋予初值，类可以:
 
 （❌）
+
 ```javascript
 struct test001
 {
@@ -233,6 +244,7 @@ struct test001
 ```
 
 （☑️）
+
 ```javascript
 class test002
 {
@@ -313,6 +325,7 @@ namespace BoxApplication
 ```
 
 ## 析构函数
+
 当类的对象超出范围时执行。
 类的名称前加上一个波浪形（~）作为前缀，它不返回值，也不带任何参数。
 用于在结束程序（比如关闭文件、释放内存等）之前释放资源。析构函数不能继承或重载。
@@ -333,26 +346,27 @@ namespace BoxApplication
 
 ![image](https://github.com/Tracy-Wei/studyNote/assets/109784975/ea70387e-cc26-44fc-9152-62f6836dd0e5)
 
-
 ## 继承
-继承的思想实现了 属于（IS-A） 关系。
+
+继承的思想实现了   属于（IS-A）  关系。
 
 一个类可以派生自多个类或接口，这意味着它可以从多个基类或接口继承数据和函数。
 
 C# 不支持多重继承。但是，您可以使用接口来实现多重继承。
 
-动态多态性：C# 允许您使用关键字 abstract 创建抽象类，用于提供接口的部分类的实现。
+动态多态性：C# 允许您使用关键字  abstract  创建抽象类，用于提供接口的部分类的实现。
 当一个派生类继承自该抽象类时，实现即完成。
 
 继承的示例：
 ![image](https://github.com/Tracy-Wei/studyNote/assets/109784975/dfe1df4b-2f09-4a21-9349-477906ea94f9)
 
 ### 抽象类的一些规则：
+
 1.不能创建一个抽象类的实例。
 
 2.不能在一个抽象类外部声明一个抽象方法。
 
-3.类定义前面放置关键字 sealed，可以将类声明为密封类。当一个类被声明为 sealed 时，它不能被继承。抽象类不能被声明为 sealed。
+3.类定义前面放置关键字  sealed，可以将类声明为密封类。当一个类被声明为  sealed  时，它不能被继承。抽象类不能被声明为 sealed。
 
 ## 运算符重载
 
@@ -368,6 +382,7 @@ public static Box operator+ (Box b, Box c)
    return box;
 }
 ```
+
 上面的函数为用户自定义的类 Box 实现了加法运算符（+）。它把两个 Box 对象的属性相加，并返回相加后的 Box 对象。
 
 ![image](https://github.com/Tracy-Wei/studyNote/assets/109784975/0433d824-6de7-41a2-96ea-d5ad8f44dc8f)
@@ -394,6 +409,7 @@ public static Box operator+ (Box b, Box c)
 ### 定义接口: InterfaceImplementer.cs
 
 接口使用 interface 关键字声明，它与类的声明类似。接口声明默认是 public 的。下面是一个接口声明的实例：
+
 ```javascript
 using System;
 
@@ -428,7 +444,9 @@ class InterfaceImplementer : IMyInterface
     }
 }
 ```
+
 输出结果：
+
 ```javascript
 MethodToImplement() called.
 ParentInterfaceMethod() called.
@@ -443,8 +461,9 @@ ParentInterfaceMethod() called.
 预处理器指令都是以 # 开始，它不是语句，所以不以分号（;）结束。
 
 例如：
+
 ```javascript
-#define PI 
+#define PI
 using System;
 namespace PreprocessorDAppl
 {
@@ -515,5 +534,3 @@ namespace ErrorHandlingApplication
     }
 }
 ```
-
-

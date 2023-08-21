@@ -9,6 +9,7 @@
 用途:1.运行时查看特性（attribute）信息。2.审查集合中的各种类型，以及实例化这些类型。3.延迟绑定的方法和属性（property）。4.在运行时创建新类型，然后使用这些类型执行一些任务。
 
 ### 查看元数据
+
 System.Reflection 类的 MemberInfo 对象需要被初始化，用于发现与类相关的特性（attribute）。
 
 ```javascript
@@ -16,6 +17,7 @@ System.Reflection.MemberInfo info = typeof(MyClass);
 ```
 
 事例：
+
 ```javascript
 using System;
 
@@ -67,6 +69,7 @@ namespace AttributeAppl
 ```
 
 使用反射（Reflection）来读取 Rectangle 类中的元数据的事例：
+
 ```javascript
 using System;
 using System.Reflection;
@@ -122,9 +125,9 @@ namespace BugFixApplication
       {
         return message;
       }
-      set 
-      { 
-        message = value; 
+      set
+      {
+        message = value;
       }
     }
   }
@@ -146,7 +149,7 @@ namespace BugFixApplication
     {
       return length * width;
     }
-    
+
     [DeBugInfo(56, "Zata Ali", "19/10/2012")]
     public void Display()
     {

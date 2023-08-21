@@ -28,6 +28,7 @@ ASP.NET Core 的依赖注入（DI）容器提供了三种生命周期：瞬时�
 ![image](https://github.com/Tracy-Wei/studyNote/assets/109784975/f7fd89b4-704c-45e1-9a47-100ebff3afe0)
 
 ### 執行流程
+
 ![image](https://github.com/Tracy-Wei/studyNote/assets/109784975/9646dd57-71d3-42c4-9be9-0a359516d260)
 
 1. Main
