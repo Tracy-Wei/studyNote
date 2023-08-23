@@ -18,11 +18,13 @@
 ### 使用 WebApplication 创建中间件管道
 
 ASP.NET Core 请求管道包含一系列请求委托，依次调用。
+
 ![image](https://github.com/Tracy-Wei/studyNote/assets/109784975/b0c90e77-69dd-4566-9c75-a33cfe400de0)
 每个委托均可在下一个委托前后执行操作。 应尽早在管道中调用异常处理委托，这样它们就能捕获在管道的后期阶段发生的异常。
 
 ### 中间件顺序
 
 下图显示了 ASP.NET Core MVC 和 Razor Pages 应用的完整请求处理管道。
+
 ![image](https://github.com/Tracy-Wei/studyNote/assets/109784975/4553760f-1813-440d-b0ad-5cc42a482cd1)
 上图中的“终结点”中间件为相应的应用类型（MVC 或 Razor Pages）执行筛选器管道
