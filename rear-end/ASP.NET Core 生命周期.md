@@ -43,18 +43,21 @@ ASP.NET Core 的依赖注入（DI）容器提供了三种生命周期：瞬时�
    - 將相依的服務註冊到 DI 容器。
    - 設定適合的 DI 生命週期
      - Singleton（单例生命周期）：是最长的生命周期，整个应用程序只会创建一个服务实例。适用于那些需要在整个应用程序中共享状态的服务，例如配置（Configuration）类、缓存（Cache）类等。
+       
        示例代码：
        ```javascript
        services.AddSingleton<IMySingletonService,MySingletonService>();
        ```
        在上面的代码中，IMySingletonService 接口被注册为单例生命周期，整个应用程序只会创建一个 MySingletonService 实例。
      - Scoped（作用域生命周期）：介于瞬时生命周期和单例生命周期之间的生命周期。每次请求都会创建一个新的服务实例，但同一请求内的所有服务实例都是相同的。适用于那些需要在请求范围内共享状态的服务，例如业务逻辑层（BLL）中的 Service、控制器（Controller）等。
+       
        示例代码：
        ```javascript
        services.AddScoped<IMyScopedService, MyScopedService>();
        ```
        在上面的代码中，IMyScopedService 接口被注册为作用域生命周期，同一请求内的所有 MyScopedService 实例都是相同的。
-     - Transient（瞬时生命周期）：是最短的生命周期，每次请求都会创建一个新的服务实例。适用于那些无状态的服务，每次 Request 時就建立一個新的，永不共用
+     - Transient（瞬时生命周期）：是最短的生命周期，每次请求都会创建一个新的服务实例。适用于那些无状态的服务，每次 Request 時就建立一個新的，永不共用.
+       
        示例代码：
        ```javascript
        services.AddTransient<IMyService, MyService>();
