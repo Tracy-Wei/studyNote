@@ -44,7 +44,7 @@ UseDefaultFiles：让网站跟目录 / 匹配到 /index.html 文件
 ```javascript
 public void ConfigureServices(IServiceCollection services)
 {
-    services.AddMvc();
+    services.AddMvc();  // 注册MVC服务
 }
 
 public void Configure(IApplicationBuilder app, IHostingEnvironment env)
