@@ -82,6 +82,11 @@ app.MapGet("/", () => "Hello World!");
   - [HttpPut("{id}")]
   - [HttpPatch("{id}")]
 
+其用法效果如：
+![image](https://github.com/Tracy-Wei/studyNote/assets/109784975/0a0b53c4-21c5-4bb1-83a4-7579aa126d1b)
+
+**Action通常用于接收传过来的参数**
+
 示例：
 /customers/1/orders
 
