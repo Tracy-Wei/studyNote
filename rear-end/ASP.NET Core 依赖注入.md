@@ -12,22 +12,6 @@ ASP.NET Core 框架的依赖注入（Dependency Injection，简称 DI）是一�
 - 在服务容器中注册依赖关系。 .NET 提供了一个内置的服务容器 IServiceProvider。 服务通常在应用启动时注册，并追加到 IServiceCollection。 添加所有服务后，可以使用 BuildServiceProvider 创建服务容器。
 - 将服务注入到使用它的类的构造函数中。 框架负责创建依赖关系的实例，并在不再需要时将其释放。
 
-#### 关键概念
-
-在 ASP.NET Core 中，依赖注入是一项核心功能，它可以在应用程序中管理各种服务、组件、中间件以及其他依赖项。
-
-1. 服务（Service）： 服务是应用程序中的组件，用于执行特定的功能。例如，数据库连接、日志记录、验证等都可以作为服务来实现。
-
-2. 依赖项（Dependency）： 一个组件可能依赖于其他组件才能正常工作。这些被依赖的组件就是依赖项。通过依赖注入，组件可以获得它所依赖的其他组件的实例。
-
-3. 依赖注入容器（DI Container）： DI 容器是一个负责管理服务和其依赖关系的容器。在 ASP.NET Core 中，默认使用的 DI 容器是 Microsoft.Extensions.DependencyInjection 容器。
-
-4. 服务注册（Service Registration）： 在 DI 容器中注册服务，使其可以在应用程序中使用。注册服务时，指定服务的接口和实现类之间的映射关系。
-
-5. 服务解析（Service Resolution）： 当应用程序需要某个服务的实例时，DI 容器会根据注册信息创建并返回实例。
-
-6. 生命周期（Lifetime）： 定义了服务实例的生存周期，即它们在应用程序中存在的时间。常见的生命周期包括 Singleton（单例）、Scoped（范围内单例）和 Transient（瞬时）。
-
 ### ASP.NET Core 中使用依赖注入的步骤如下：
 
 1. 在 Startup.cs 文件的 ConfigureServices 方法中，使用 services 参数注册服务，指定服务接口和实现类之间的映射关系，以及服务的生命周期。
