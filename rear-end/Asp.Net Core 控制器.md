@@ -26,19 +26,30 @@ public class HomeController : Controller
 }
 ```
 
-模型檢視控制器 (MVC) 架構模式可將一個應用程式劃分成三個主要元件：模型 (M)、檢視 (V) 和控制器 (C)。
+模型检视控制器 (MVC) 架构模式可將一個应用程式划分成三個主要元件：模型 (M)、检视 (V) 和控制器 (C)。
 
-Controllers：類別：
-處理瀏覽器要求。
-擷取模型資料。
-呼叫傳迴響應的檢視範本。
+Controllers：类别：
+处理浏览器要求。
+摘取模型资料。
+呼叫传回响应的检视范本。
 
-<kbd>Controllers/HelloWorldController.cs </kbd>内容:
-
-<!-- ```javascript
-
-``` -->
 
 UseDefaultFiles 在 UseStaticFiles 之前
+
 UseStaticFiles：找到并返回它们
+
 UseDefaultFiles：让网站跟目录 / 匹配到 /index.html 文件
+
+例如：
+```javascript
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddMvc();  // 注册MVC服务
+}
+
+public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+{
+    app.UseFileServer();
+    app.UseMvcWithDefaultRoute();
+}
+```
