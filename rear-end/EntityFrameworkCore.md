@@ -264,9 +264,9 @@ public class UserRepository : IUserRepository
 }
 ```
 
-DbContext 方法参考[1]：
+DbContext 方法参考：[link1]
 
-整体创建 EFCore 步骤过程参考[2]：
+整体创建 EFCore 步骤过程参考：[link2]
 
-[1]: https://learn.microsoft.com/zh-tw/dotnet/api/microsoft.entityframeworkcore.dbcontext.add?view=efcore-7.0
-[2]: https://github.com/DOGGIE4/desktop-tutorial/blob/main/EF%20Core%20Learn.md
+[link1]: https://learn.microsoft.com/zh-tw/dotnet/api/microsoft.entityframeworkcore.dbcontext.add?view=efcore-7.0
+[link2]: https://github.com/DOGGIE4/desktop-tutorial/blob/main/EF%20Core%20Learn.md
