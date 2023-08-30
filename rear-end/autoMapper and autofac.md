@@ -99,7 +99,7 @@ cfg.CreateMap<StudentPO, StudentDto>().ReverseMap();
 ForMember()自定义映射关系：
 
 ```javascript
-cfg.CreateMap<StudentPO, StudentDto>().ForMember(des=>des.EnName,op=>op.MapFrom(src=>src.ZhName));
+cfg.CreateMap<StudentPO, StudentDto>().ForMember(des => des.EnName,op => op.MapFrom(src => src.ZhName));
 ```
 
 ### Profile
