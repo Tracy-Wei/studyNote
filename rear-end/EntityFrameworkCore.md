@@ -264,6 +264,6 @@ public class UserRepository : IUserRepository
 }
 ```
 
-DbContext 方法查看：[link1]
+DbContext 的全部方法可查看：[link1]
 
 [link1]: https://learn.microsoft.com/zh-tw/dotnet/api/microsoft.entityframeworkcore.dbcontext.add?view=efcore-7.0
