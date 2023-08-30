@@ -8,24 +8,6 @@ Model Mapping 是指将关系型数据库中的表结构映射到应用程序中
 
 在 Entity Framework Core 中，开发者需要定义一个继承自 DbContext 的类，这个类表示了数据库上下文，其中包含了用于与数据库交互的 DbSet 属性。每个 DbSet 属性都代表了数据库中的一个表，而实体类则代表了表中的行。
 
-下面是一个简单的例子，展示如何使用 Entity Framework Core 进行模型映射：
-
-```javascript
-using Microsoft.EntityFrameworkCore;
-
-public class MyDbContext : DbContext
-{
-    public DbSet<User> Users { get; set; }
-}
-
-public class User
-{
-    public int Id { get; set; }
-    public string Username { get; set; }
-    public string Email { get; set; }
-}
-```
-
 ### DbContext 类：
 
 DbContext 是一个重要的类，代表了数据库上下文。它包含了用于操作数据库的 DbSet 属性，每个 DbSet 属性对应一个数据库表。DbContext 类负责跟踪实体类的变化，并将这些变化同步到数据库中。
@@ -80,41 +62,80 @@ public class BloggingContext : DbContext
 
 ### 实体类（Entity Class）：
 
-实体类是用于表示数据库表中的数据行的类。每个实体类的属性通常映射到数据库表的列，而实体类的实例则对应于表中的数据记录。实体类定义了数据的结构和行为，同时也是开发者与数据库之间交互的主要接口。
+实体类是用于表示数据库表中的数据行的类。每个实体类的属性通常映射到数据库表的列，而实体类的实例则对应于表中的数据记录。实体类定义了数据的结构和行为，同时也是开发者与数据库之间交互的主要接口。（一般统一放 Domain 里面）
+
+示例：
+
+```javascript
+ public class Movie
+    {
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public string Director { get; set; }
+        public int YearReleased { get; set; }
+
+        // 构造函数
+        public Movie(string title, string director, int yearReleased)
+        {
+            Title = title;
+            Director = director;
+            YearReleased = yearReleased;
+        }
+    }
+```
 
 ### Fluent API 和数据注解：
 
 Entity Framework Core 提供了两种方式来配置实体类和数据库表之间的映射关系：Fluent API 和数据注解。
 
 - Fluent API：Fluent API 是一种通过代码来配置映射关系的方式。开发者可以在 DbContext 类的 OnModelCreating 方法中使用 Fluent API 方法来定义实体类的属性与数据库表的映射规则，例如设置主键、外键、索引等。
+  示例：
+
+  ```javascript
+  using Microsoft.EntityFrameworkCore;
+
+  namespace EFModeling.EntityProperties.FluentAPI.Required;
+
+  internal class MyContext : DbContext
+  {
+      public DbSet<Blog> Blogs { get; set; }
+
+      #region Required
+      protected override void OnModelCreating(ModelBuilder modelBuilder)
+      {
+          modelBuilder.Entity<Blog>()
+              .Property(b => b.Url)
+              .IsRequired();
+      }
+      #endregion
+  }
+
+  public class Blog
+  {
+      public int BlogId { get; set; }
+      public string Url { get; set; }
+  }
+  ```
 
 - 数据注解：数据注解是通过在实体类的属性上添加特定的属性来定义映射关系的方式。通过在属性上添加 [Key]、[Required]、[Column] 等数据注解，可以指定属性在数据库中的映射方式，例如指定主键、设置列名等。
+  示例：
 
-```javascript
-using Microsoft.EntityFrameworkCore;
+  ```javascript
+  using System.ComponentModel.DataAnnotations;
 
-namespace EFModeling.EntityProperties.FluentAPI.Required;
+  public class Product
+  {
+      [Key] // 定义主键
+      public int ProductId { get; set; }
 
-internal class MyContext : DbContext
-{
-    public DbSet<Blog> Blogs { get; set; }
+      [Required] // 定义非空约束
+      [StringLength(100)] // 定义最大长度
+      public string Name { get; set; }
 
-    #region Required
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<Blog>()
-            .Property(b => b.Url)
-            .IsRequired();
-    }
-    #endregion
-}
-
-public class Blog
-{
-    public int BlogId { get; set; }
-    public string Url { get; set; }
-}
-```
+      [Column("first_name")] // 数据注解，用于将该属性映射到数据库表中的一个特定列
+      public string FirstName { get; set; }
+  }
+  ```
 
 **modelBuilder.Entity<T>()** 是用于配置实体类映射的方法。这个方法允许你在 OnModelCreating 方法中使用 Fluent API 来定义实体类与数据库表之间的映射关系、主键、外键以及其他高级配置。
 
@@ -124,22 +145,10 @@ public class Blog
 modelBuilder.Entity<ClassA>().HasKey(t => t.ID);    //配置ClassA的ID属性为主键
 ```
 
-配置联合主键：
-
-```javascript
-modelBuilder.Entity<ClassA>().HasKey(t => new { t.ID, t.Name });    //配置ClassA的ID和Name为主键
-```
-
 设置数据非数据库生成：
 
 ```javascript
 modelBuilder.Entity<ClassA>().Property(t => t.Id).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);    //ClassA的Id属性不用数据库控制生成
-```
-
-设置字段最大长度：
-
-```javascript
-modelBuilder.Entity<ClassA>().Property(t => t.Name).HasMaxLength(100);     //设置ClassA类的Name属性的最大长度为100,如果值长度100，会抛出 DbEntityValidationException异常
 ```
 
 设置字段为必需：
@@ -222,6 +231,7 @@ public class UserRepository : IUserRepository
 
     public UserRepository(MyDbContext dbContext)
     {
+      // 通过在 PersonDataProvider 类中注入 MyDbContext 类的实例，我们可以在该类中使用 _dbContext 来访问数据库
         _dbContext = dbContext;
     }
 
@@ -253,3 +263,10 @@ public class UserRepository : IUserRepository
     }
 }
 ```
+
+DbContext 方法参考[1]：
+
+整体创建 EFCore 步骤过程参考[2]：
+
+[1]: https://learn.microsoft.com/zh-tw/dotnet/api/microsoft.entityframeworkcore.dbcontext.add?view=efcore-7.0
+[2]: https://github.com/DOGGIE4/desktop-tutorial/blob/main/EF%20Core%20Learn.md
