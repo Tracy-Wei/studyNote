@@ -47,7 +47,7 @@ optionsBuilder
   .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 ```
 
-OnConfiguring
+OnConfiguring:
 
 ```javascript
 public class BloggingContext : DbContext
@@ -59,6 +59,27 @@ public class BloggingContext : DbContext
     }
 }
 ```
+OnModelCreating(示例写法):
+```javascript
+protected override void OnModelCreating(ModelBuilder modelBuilder)
+{
+    modelBuilder.Entity<Author>()
+        .HasMany(a => a.Books)
+        .WithOne(b => b.Author)
+        .HasForeignKey(b => b.AuthorId);
+}
+```
+
+- OnConfiguring 方法： 这个方法允许您配置数据库上下文的连接字符串、数据库提供程序、日志记录选项等。在这个方法中，您可以通过重写它来设置数据库连接相关的信息。通常情况下，这个方法在构建数据库上下文实例时被调用，如果您使用的是dependency injection（依赖注入），可能不需要手动重写这个方法。
+
+- OnModelCreating 方法： 这个方法用于配置数据库上下文的模型（Model）。在这个方法中，您可以定义实体类型、关系、表名、字段属性等数据库模型的细节。这个方法在数据库上下文第一次被使用时被调用，通常在执行查询、更新等数据库操作之前。
+  
+为什么要分为这两个方法呢？
+- 分离关注点： 将配置连接字符串等连接级别的配置放在 OnConfiguring 中，将定义数据库模型的逻辑放在 OnModelCreating 中，有助于分离不同关注点的代码，使代码更加清晰可维护。
+
+- 性能优化： OnModelCreating 方法在数据库上下文的生命周期中只会被调用一次，而 OnConfiguring 方法在每次构建数据库上下文实例时都会被调用。将数据库连接相关的配置放在 OnConfiguring 中可以避免在每次查询或操作数据库时重复配置连接信息。
+  
+总的来说，OnConfiguring 用于配置数据库连接等连接级别的信息，而 OnModelCreating 用于配置数据库模型，两者各自有不同的用途和时机。
 
 ### 实体类（Entity Class）：
 
