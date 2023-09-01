@@ -1,5 +1,5 @@
 ## EFCore 的构造思路步骤
-
+ [参考][1]
 1. 建 person 类
 
 ```javascript
@@ -229,3 +229,5 @@ public class PeopleController : ControllerBase
     }
 }
 ```
+
+[1]: [https://github.com/DOGGIE4/desktop-tutorial/blob/main/EF%20Core%20Learn.md]
