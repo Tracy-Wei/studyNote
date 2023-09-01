@@ -1,0 +1,196 @@
+## Mediator.Net 框架
+
+是一个用于实现中介者（Mediator）模式的开源框架，它在 C# 应用程序中帮助实现解耦和更好的组织业务逻辑。框架中的中介者模式基于消息传递，允许不同的组件通过中介者进行通信，从而实现松耦合的架构。
+
+中介者模式：用一个中介对象来封装一系列的对象交互。中介者使各个对象不需要显式地相互引用，从而使其耦合松散，而且可以独立地改变它们之间的交互。
+
+![image](https://github.com/Tracy-Wei/studyNote/assets/109784975/4d351f5b-5e1c-4f1f-a8af-7653be7efa3e)
+
+安装 nuget 包 Mediator.Net：
+
+```javascript
+Install-Package Mediator.Net
+```
+
+在 ASP.NET Core 应用程序中实现中介者模式，可以按照以下步骤进行：
+
+1. 创建中介者类：创建一个中介者类，用于管理对象之间的交互。中介者类应该包含与其他对象通信的方法，并处理任何必要的逻辑。
+
+2. 创建对象：创建需要相互交互的对象。这些对象可以包括服务、控制器、视图组件或任何其他需要相互交互的组件。
+
+3. 注册对象：在中介者类中注册这些对象。这可以通过构造函数注入或手动注册等方式完成。
+
+4. 调用中介者：在需要两个或多个对象之间交互的地方，调用中介者类中的相应方法。这将触发中介者类中的逻辑，并促进对象之间的通信。
+
+Mediator：抽象中介者，定义了同事对象到中介对象的接口。
+
+ConcreteMediator：具体中介者，实现了抽象类的方法。它需要知道所有具体的同事类，并从某个具体同事类接收消息，向某个具体同事类发送消息。
+
+Colleague：抽象同事类。
+
+ConcreteColleague：具体同事类，每个同事类都知道自己的行为，而不了解其它同事类的行为，但都认识中介对象。
+示例：
+
+```javascript
+// 定义中介者接口
+public interface IMediator
+{
+    void Send(string message, Colleague colleague);
+}
+
+// 定义同事类
+public class Colleague
+{
+    private readonly IMediator _mediator;
+
+    public Colleague(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
+    public void Send(string message)
+    {
+        _mediator.Send(message, this);
+    }
+
+    public void Notify(string message)
+    {
+        Console.WriteLine($"Received message: {message}");
+    }
+}
+
+// 定义中介者类
+public class ConcreteMediator : IMediator
+{
+    private readonly Colleague _colleague1;
+    private readonly Colleague _colleague2;
+
+    public ConcreteMediator(Colleague colleague1, Colleague colleague2)
+    {
+        _colleague1 = colleague1;
+        _colleague2 = colleague2;
+    }
+
+    public void Send(string message, Colleague colleague)
+    {
+        if (colleague == _colleague1)
+        {
+            _colleague2.Notify(message);
+        }
+        else
+        {
+            _colleague1.Notify(message);
+        }
+    }
+}
+```
+
+在 Startup.cs 中注册中介者和同事类：
+
+```javascript
+services.AddScoped<IMediator, ConcreteMediator>();
+services.AddScoped<Colleague>();
+
+// 在Controller中使用中介者模式
+public class HomeController : Controller
+{
+    private readonly Colleague _colleague;
+
+    public HomeController(Colleague colleague)
+    {
+        _colleague = colleague;
+    }
+
+    public IActionResult Index()
+    {
+        _colleague.Send("Hello World!");
+        return View();
+    }
+}
+```
+
+### 管道^[1]：
+
+可以使用五种不同类型的管道
+
+![image](https://github.com/Tracy-Wei/studyNote/assets/109784975/a64f96b0-aa38-4948-8dfd-f2ad0503a8f1)
+
+全局接收管道
+每当消息在到达下一个管道和处理程序之前发送、发布或请求时，都会触发此管道
+
+命令接收管道
+该管道将 ​​ 在到达其命令处理程序之后和之前触发 GlobalReceivePipeline，该管道仅用于 ICommand
+
+事件接收管道
+该管道将 ​​ 在到达其事件处理程序之后和之前触发 GlobalReceivePipeline，该管道仅用于 IEvent
+
+请求接收管道
+该管道将 ​​ 在到达其请求处理程序之后和之前触发 GlobalReceivePipeline，该管道仅用于 IRequest
+
+发布管道
+当在处理程序中发布 an 时，将触发此管道 IEvent，此管道仅用于 IEvent 且通常用作传出拦截器
+
+上述管道最强大的功能是您可以添加任意数量的中间件。
+
+设置中间件：
+
+- 为您的中间件添加静态类
+- 在刚刚添加的类中添加公共静态扩展方法，通常遵循 UseXxxx 命名约定
+- 为您的中间件规范添加另一个类，请注意，这是您的中间件的实现
+
+中间件可能需要一些依赖项，有两种方法可以实现
+
+- 明确地传递它们
+- 让 IoC 容器为您解决（如果您正在使用 IoC）
+
+### 应用程序分为三个主要的层：
+
+表示层（Presentation Layer）、业务逻辑层（Business Logic Layer）和数据访问层（Data Access Layer）。
+
+### mediator 具体：
+
+注册 Handler 和信息（Message）之间的绑定，当他收到特定信息时，会在它的注册表里找出对应的 Handler 从而调用。
+
+#### mediator 具体是怎么实现寻找到对应的 handler 的呢？
+
+1. 首先会在 controller 使用 SendAsync(command)/RequestAsync(request)
+   （使用了 SendMessage 来判断传来的 IMessage 是属于 command/request/event 中的哪一种类型）
+2. 随后选择到对应的管道，寻找到对应的 handler
+3. 最后 handle 执行的任务。
+
+#### Message Contract
+
+用于在分布式系统中定义和传递消息的结构和内容。
+
+在分布式系统中，不同的服务或组件可能需要相互通信，而消息通常是实现这种通信的一种方式。
+
+Message Contract 确保不同服务之间的消息格式和内容是一致的，从而实现解耦和可维护性。
+
+#### SendAsync
+
+是 Mediator 模式中的一个方法，用于发送一个请求或命令，并返回响应。在 Mediator 模式中，它将请求发送到适当的处理程序（也称为请求处理程序或命令处理程序），然后由处理程序执行相应的操作并返回结果。
+
+```javascript
+var response = await _mediator.SendAsync<RequestType, ResponseType>(request);
+
+// <RequestType, ResponseType> : 指定请求的类型（RequestType）和期望的响应类型（ResponseType）。
+
+// request：要发送的请求实例，这个请求实例会传递给相应的处理程序来进行处理。
+```
+
+#### Ok(response)
+
+- Ok：表示成功的状态码，通常是 200 OK。
+- response：要返回给客户端的数据或对象。
+
+这个方法会构造一个 HTTP 响应，将状态码设置为 200 OK，并将响应对象序列化为 JSON（默认情况下）并作为响应的内容返回给客户端。这样客户端就能够收到服务器处理后的数据。
+
+#### ConfigureAwait(false)
+
+是一种用于配置异步操作上下文的方法。用于指定在异步操作完成后是否要切换回原始的上下文（通常是调用线程的上下文）。
+
+### 应用步骤
+
+1.
+
+[1]: https://github.com/mayuanyang/Mediator.Net
