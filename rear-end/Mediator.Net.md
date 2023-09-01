@@ -189,8 +189,14 @@ var response = await _mediator.SendAsync<RequestType, ResponseType>(request);
 
 是一种用于配置异步操作上下文的方法。用于指定在异步操作完成后是否要切换回原始的上下文（通常是调用线程的上下文）。
 
-### 应用步骤
+#### 应用步骤 ：
 
-1.
+（留着结合项目看再总结）
+
+----
+
+步骤参考查阅了:lizzie学习笔记 [link3]
 
 [1]: https://github.com/mayuanyang/Mediator.Net
+[2]: #
+[link3]: https://github.com/DOGGIE4/desktop-tutorial/blob/a9eb7f41ea01b136ab329d5c543c8dc4761b269c/Mediator%20Learn.md
