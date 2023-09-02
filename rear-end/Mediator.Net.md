@@ -166,32 +166,233 @@ public class HomeController : Controller
 
 Message Contract 确保不同服务之间的消息格式和内容是一致的，从而实现解耦和可维护性。
 
-#### SendAsync
+#### 应用步骤流程 ：
 
-是 Mediator 模式中的一个方法，用于发送一个请求或命令，并返回响应。在 Mediator 模式中，它将请求发送到适当的处理程序（也称为请求处理程序或命令处理程序），然后由处理程序执行相应的操作并返回结果。
+1. 首先会在controller引用mediator，用controller发对应信息（上述的Message Contract）
+    ```javascript
+    using Mediator.Net;
+    using Microsoft.AspNetCore.Mvc;
+    using PractiseForTracy.Message.Commands;
 
-```javascript
-var response = await _mediator.SendAsync<RequestType, ResponseType>(request);
+    namespace PractiseForTracy.Api.Controllers
+    {
+        [ApiController]
+        [Route("api/[controller]")]
+        public class PersonController : ControllerBase
+        {
+            public readonly IMediator _mediator;
 
-// <RequestType, ResponseType> : 指定请求的类型（RequestType）和期望的响应类型（ResponseType）。
+            public PersonController(IMediator mediator)
+            {
+                _mediator = mediator;
+            }
+        
+            [HttpPost]
+            [Route("create")]
+            public async Task<IActionResult> CreateAsync([FromBody] CreatePeopleCommand command)
+            {
+                var response = await _mediator
+                    .SendAsync<CreatePeopleCommand, CratePeopleResponse>(command)
+                    .ConfigureAwait(false);
 
-// request：要发送的请求实例，这个请求实例会传递给相应的处理程序来进行处理。
-```
+                return Ok(response);
+            }
+        }
+    }
+    ```
 
-#### Ok(response)
+    - SendAsync：是 Mediator 模式中的一个方法，用于发送一个请求或命令，并返回响应。在 Mediator 模式中，它将请求发送到适当的处理程序（也称为请求处理程序或命令处理程序），然后由处理程序执行相应的操作并返回结果。
 
-- Ok：表示成功的状态码，通常是 200 OK。
-- response：要返回给客户端的数据或对象。
+        ```javascript
+        var response = await _mediator.SendAsync<RequestType, ResponseType>(request);
 
-这个方法会构造一个 HTTP 响应，将状态码设置为 200 OK，并将响应对象序列化为 JSON（默认情况下）并作为响应的内容返回给客户端。这样客户端就能够收到服务器处理后的数据。
+        // <RequestType, ResponseType> : 指定请求的类型（RequestType）和期望的响应类型（ResponseType）。
 
-#### ConfigureAwait(false)
+        // request：要发送的请求实例，这个请求实例会传递给相应的处理程序来进行处理。
+        ```
 
-是一种用于配置异步操作上下文的方法。用于指定在异步操作完成后是否要切换回原始的上下文（通常是调用线程的上下文）。
+    - CreateAsync: 是一个控制器操作方法（Action Method），它用于处理 HTTP POST 请求，通常用于创建新资源
 
-#### 应用步骤 ：
+    - [FromBody]: 是一个属性，用于告诉 ASP.NET Core 框架从 HTTP 请求的主体中读取数据，然后将其绑定到方法的参数上。
+  
+    - CreatePeopleCommand: 是参数的类型，表示这个方法期望接收一个名为 command 的 HTTP 请求主体中的 JSON 数据，并将其反序列化为 CreatePeopleCommand 类型的对象。
 
-（留着结合项目看再总结）
+    - Ok(response)指的是：这个方法会构造一个 HTTP 响应，将状态码设置为 200 OK，并将响应对象序列化为 JSON（默认情况下）并作为响应的内容返回给客户端。这样客户端就能够收到服务器处理后的数据。
+      - Ok：表示成功的状态码，通常是 200 OK。
+      - response：要返回给客户端的数据或对象。
+
+    - ConfigureAwait(false)：是一种用于配置异步操作上下文的方法。用于指定在异步操作完成后是否要切换回原始的上下文（通常是调用线程的上下文）。
+
+2. 根据sendAsynv方法去判断CreatPeopleCommand和CratePeopleResponse。
+    ```javascript
+    using Mediator.Net.Contracts;
+    using PractiseForTracy.Message.Dto;
+
+    namespace PractiseForTracy.Message.Commands;
+
+    public class CreatePeopleCommand : ICommand
+    {
+        public CreateOrUpdatePeopleDto Person { get; set; }
+    }
+
+    public class CratePeopleResponse : IResponse
+    {
+        public string Result { get; set; }
+    }
+    ```
+    ```javascript
+    namespace PractiseForTracy.Message.Dto;
+
+    public class CreateOrUpdatePeopleDto
+    {
+        public int Id { get; set; }
+
+        public string FirstName { get; set; }
+        
+        public string LastName { get; set; }
+
+        public DateTime CreateAt { get; set; }
+    }
+    ```
+
+3. 根据对应的管道找到对应的handler，这里通过Handle方法来调用了 _personService 的 AddPersonAsync 方法。实现后会生成一个事件，并通过PublishAsync通知到对应的 EventHandler去做后续的处理。
+    ```javascript
+    using Mediator.Net.Context;
+    using Mediator.Net.Contracts;
+    using PractiseForTracy.Core.Service;
+    using PractiseForTracy.Message.Commands;
+
+    namespace PractiseForTracy.Core.Handlers;
+
+    public class CreatePeopleCommandHandler : ICommandHandler<CreatePeopleCommand,CratePeopleResponse>
+    {
+        public readonly IPersonService _personService;
+
+        public CreatePeopleCommandHandler(IPersonService personService)
+        {
+            _personService = personService;
+        }
+
+        public async Task<CratePeopleResponse> Handle(IReceiveContext<CreatePeopleCommand> context, CancellationToken cancellationToken)
+        {
+            var @event = await _personService.AddPersonAsync(context.Message, cancellationToken).ConfigureAwait(false);
+            
+            await context.PublishAsync(@event, cancellationToken).ConfigureAwait(false);
+
+            return new CratePeopleResponse
+            {
+                Result = @event.Result
+            };
+        }
+    }
+    ```
+4. EventHandler
+    ```javascript
+    using Mediator.Net.Context;
+    using Mediator.Net.Contracts;
+    using PractiseForTracy.Message.Events.People;
+
+    namespace PractiseForTracy.Core.Handlers.EventHandler;
+
+    public class PeopleCreatedEvent:IEventHandler<PeopleCreateEvent>
+    {
+        public async Task Handle(IReceiveContext<PeopleCreateEvent> context, CancellationToken cancellationToken)
+        {
+            await Task.CompletedTask;
+        }
+    }
+    ```
+    ```javascript
+    using Mediator.Net.Contracts;
+
+    namespace PractiseForTracy.Message.Events.People;
+
+    public class PeopleCreateEvent : IEvent
+    {
+        public string Result { get; set; }
+    }
+    ```
+5. PersonService中调用PersonDataProvider的CreatAsync方法,返回一个PeopleCreatedEvent 对象。
+    ```javascript
+    using AutoMapper;
+    using Mediator.Net;
+    using PractiseForTracy.Core.Domain;
+    using PractiseForTracy.Core.Handlers.EventHandler;
+    using PractiseForTracy.Core.Service;
+    using PractiseForTracy.Message.Commands;
+    using PractiseForTracy.Message.Events.People;
+
+    namespace PractiseForTracy.Core.People
+    {
+        public class PersonService : IPersonService
+        {
+            private readonly IMapper _mapper;
+            private readonly IPersonDataProvider _personDataProvider;
+            
+            
+            public async Task<PeopleCreatedEvent> AddPersonAsync(CreatePeopleCommand command, CancellationToken cancellationToken)
+            {
+                var response = await _personDataProvider.CreatAsync(_mapper.Map<Person>(command.Person), cancellationToken)
+                    .ConfigureAwait(false) > 0
+                    ? "数据写入成功"
+                    : "数据写入失败";
+
+                return new PeopleCreatedEvent
+                {
+                    Result = response
+                };
+            }
+
+            <!-- 无关代码，后续再做更改 -->
+            public Task DelayCreatePerson(DelayCreatePeopleCommand command)
+            {
+                throw new NotImplementedException();
+            }
+
+            Task<PeopleCreateEvent> IPersonService.AddPersonAsync(CreatePeopleCommand command, CancellationToken cancellationToken)
+            {
+                throw new NotImplementedException();
+            }
+        }
+    }
+    ```
+    
+    ```javascript
+    using PractiseForTracy.Core.Domain;
+    using PractiseForTracy.Core.Service;
+
+    namespace PractiseForTracy.Core.People;
+
+    public interface IPersonDataProvider : IService
+    {
+        Task<int> CreatAsync(Person person, CancellationToken cancellationToken);
+    }
+    ```
+6. 然后PersonDataProvider中的CreatAsync去AddAsync。
+    ```javascript
+    using PractiseForTracy.Core.Data;
+    using PractiseForTracy.Core.Data.PractiseForTracyDbContext;
+    using PractiseForTracy.Core.Domain;
+
+    namespace PractiseForTracy.Core.People;
+
+    public class PersonDataProvider
+    {
+        private readonly PractiseForTracyDbContext _dbContext;
+
+        public PersonDataProvider(PractiseForTracyDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
+
+        public async Task<int> CreatAsync(Person person, CancellationToken cancellationToken)
+        {
+            await _dbContext.People.AddAsync(person, cancellationToken).ConfigureAwait(false);
+
+            return await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+        }
+    }
+    ```
 
 ----
 
