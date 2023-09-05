@@ -264,7 +264,13 @@ var configuration = new MapperConfiguration(cfg => cfg.CreateMap(typeof(Source<>
 
 AutoFac 是一个.NET平台上的依赖注入（DI）容器和服务定位器，也是.net 下比较流行的实现依赖注入的工具之一。它的主要作用是管理应用程序中的组件依赖关系，确保组件（类、接口等）能够以一种松耦合的方式协同工作。
 
-合到你的应用的基本流程如下:
+Autofac IOC 依赖注入方式和生命周期以及Autofac配置文件配置IOC属性注入
+
+Autofac IOC 依赖注入方式：构造函数(默认)，属性，方法，属性(1、接口实现类的属性注入，2、Controller控制器中的属性注入)
+
+Autofac IOC 生命周期以 ：瞬态(InstancePerDependency)，单例(SingleInstance)，作用域(InstancePerLifetimeScope)，作用域(标志)(InstancePerMatchingLifetimeScope("标志")), 请求(PerRequest)等
+
+应用的基本流程如下:
 
 1. 按照 控制反转 (IoC) 的思想构建你的应用.
 2. 添加 Autofac 引用.
