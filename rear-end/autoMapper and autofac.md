@@ -262,7 +262,8 @@ var configuration = new MapperConfiguration(cfg => cfg.CreateMap(typeof(Source<>
 
 ## Autofac 框架
 
-AutoFac 是一个开源的轻量级的依赖注入容器，也是.net 下比较流行的实现依赖注入的工具之一。
+AutoFac 是一个.NET平台上的依赖注入（DI）容器和服务定位器，也是.net 下比较流行的实现依赖注入的工具之一。它的主要作用是管理应用程序中的组件依赖关系，确保组件（类、接口等）能够以一种松耦合的方式协同工作。
+
 合到你的应用的基本流程如下:
 
 1. 按照 控制反转 (IoC) 的思想构建你的应用.
@@ -331,5 +332,191 @@ public class DefaultController : ControllerBase
   {
       return userService.GetName("Autofac");
   }
+}
+```
+
+### 在项目中实操：
+
+1. appsetting.json添加本地数据库
+```javascript
+  "ConnectionStrings": {
+    "Default": "server=localhost;userid=root;password=123456;database=smart_faq;Allow User Variables=True;"
+  },
+```
+
+2. 建立一个ConnectionString的类，通过这个类去寻找appsetting里面的数据库配置
+```javascript
+using Microsoft.Extensions.Configuration;
+
+namespace PractiseForTracy.Core.Setting.System;
+
+public class ConnectionString : IConfigurationSetting<string>
+{
+    public ConnectionString(IConfiguration configuration)
+    {
+        Value = configuration.GetConnectionString("Default");
+    }
+    
+    public string Value { get; set; }
+}
+```
+
+3. 在DbContext这里引用ConnectionString，如果MySqlServerVersion报错，注意要安装Pomelo.EntityFrameworkCore.MySql依赖
+```javascript
+using System.Reflection;
+using Microsoft.EntityFrameworkCore;
+using PractiseForTracy.Core.Domain;
+using PractiseForTracy.Core.Setting.System;
+
+namespace PractiseForTracy.Core.Data;
+
+public class PractiseForTracyDbContext : DbContext, IUnitOfWork
+{
+    private readonly ConnectionString _connectionString;
+
+    public PractiseForTracyDbContext(ConnectionString connectionString)
+    {
+        _connectionString = connectionString;
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseMySql(_connectionString.Value, new MySqlServerVersion(new Version(5, 7, 0)));
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        typeof(PractiseForTracyDbContext).GetTypeInfo().Assembly.GetTypes()
+            .Where(t => typeof(IEntity).IsAssignableFrom(t) && t.IsClass).ToList()
+            .ForEach(x =>
+            {
+                if (modelBuilder.Model.FindEntityType(x) == null)
+                    modelBuilder.Model.AddEntityType(x);
+            });
+    }
+    
+    public bool ShouldSaveChanges { get; set; }
+}
+
+```
+
+4. 在program加入autofac的引用，因为后续用到autofac配置依赖
+```javascript
+using Autofac.Extensions.DependencyInjection;
+
+namespace PractiseForTracy.Api;
+
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        CreateHostBuilder(args).Build().Run();
+    }
+
+    public static IHostBuilder CreateHostBuilder(string[] args) => Host.CreateDefaultBuilder(args)
+        .UseServiceProviderFactory(new AutofacServiceProviderFactory())
+        .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>());
+}
+```
+
+5. 在startup文件中引用PractiseForTracyModule使用依赖配置
+```javascript
+public void ConfigureContainer(ContainerBuilder builder)
+    {
+        builder.RegisterModule(new PractiseForTracyModule(Configuration, typeof(PractiseForTracyModule).Assembly));
+    }
+```
+
+6. 上面的在startup文件中用到PractiseForTracyModule，所以要建立了module，利用autofac来配置
+```javascript
+using System.Reflection;
+using Autofac;
+using Mediator.Net;
+using AutoMapper.Contrib.Autofac.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using PractiseForTracy.Core.Data;
+using PractiseForTracy.Core.MiddleWares.UnifyResponse;
+using PractiseForTracy.Core.MiddleWares.UnitOfWork;
+using PractiseForTracy.Core.Service;
+using PractiseForTracy.Core.Setting;
+using Module = Autofac.Module;
+
+namespace PractiseForTracy.Core;
+
+public class PractiseForTracyModule : Module
+{
+    private readonly Assembly[] _assemblies;
+    private readonly IConfiguration _configuration;
+
+    public PractiseForTracyModule(IConfiguration configuration, params Assembly[] assemblies)
+    {
+        _assemblies = assemblies;
+        _configuration = configuration;
+    }
+
+    protected override void Load(ContainerBuilder builder)
+    {
+        RegisterMediator(builder);
+
+        RegisterDbContext(builder);
+
+        RegisterDependency(builder);
+
+        RegisterSettings(builder);
+
+        RegisterAutoMapper(builder);
+    }
+
+    private void RegisterMediator(ContainerBuilder builder)
+    {
+        var mediatorBuilder = new MediatorBuilder();
+
+        mediatorBuilder.RegisterHandlers(_assemblies);
+        mediatorBuilder.ConfigureGlobalReceivePipe(c =>
+        {
+            c.UseUnitOfWork();
+            c.UseUnifyResponse();
+        });
+    }
+
+    private void RegisterDbContext(ContainerBuilder builder)
+    {
+        builder.RegisterType<PractiseForTracyDbContext>().AsSelf().As<DbContext>().AsImplementedInterfaces()
+            .InstancePerLifetimeScope();
+    }
+
+    private void RegisterDependency(ContainerBuilder builder)
+    {
+        foreach (var type in typeof(IService).Assembly.GetTypes().Where(t => typeof(IService).IsAssignableFrom(t) && t.IsClass))
+        {
+            switch (true)
+            {
+                case bool _ when typeof(IInstancePerLifetimeScopeService).IsAssignableFrom(type):
+                    builder.RegisterType(type).AsImplementedInterfaces().InstancePerLifetimeScope();
+                    break;
+                case bool _ when typeof(ISingletonService).IsAssignableFrom(type):
+                    builder.RegisterType(type).AsImplementedInterfaces().SingleInstance();
+                    break;
+                default:
+                    builder.RegisterType(type).AsImplementedInterfaces();
+                    break;
+            }
+        }
+    }
+
+    private void RegisterSettings(ContainerBuilder builder)
+    {
+        var settingTypes = typeof(PractiseForTracyModule).Assembly.GetTypes()
+            .Where(t => t.IsClass && typeof(IConfigurationSetting).IsAssignableFrom(t))
+            .ToArray();
+        
+        builder.RegisterTypes(settingTypes).AsSelf().SingleInstance();
+    }
+
+    private void RegisterAutoMapper(ContainerBuilder builder)
+    {
+        builder.RegisterAutoMapper(typeof(PractiseForTracyModule).Assembly);
+    }
 }
 ```
