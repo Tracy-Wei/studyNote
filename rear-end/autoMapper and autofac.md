@@ -133,6 +133,22 @@ var config = new MapperConfiguration((cfg) => {
 });
 ```
 
+### DTO 和实体类区别
+
+- DTO（AddProductDto）：DTO 是数据传输对象的缩写，通常用于在不同的应用程序层之间传输数据。在这里，AddProductDto 用于在应用程序的不同部分传递有关产品的数据。DTO 类通常只包含与传输相关的数据，而不包含业务逻辑或数据访问逻辑。
+
+- 实体类（Product）：实体类通常用于表示应用程序的领域模型，它们包含与业务逻辑和数据访问相关的信息。在这里，Product 可能是数据库中产品的模型，包含了与产品相关的数据库列以及与数据库交互的数据访问逻辑。
+
+为什么要这样做的原因：
+
+1. 解耦合：将 DTO 与实体类分开可以减少不同层之间的耦合度。例如，数据访问层通常需要实体类来与数据库交互，而控制器或服务层可能需要 DTO 来接收或传递数据。通过将它们分开，可以降低不同层之间的依赖性。
+
+2. 数据传输：DTO 可以用于将实体类的数据传输到客户端或其他服务，而无需将实体类的所有属性暴露给外部。这可以增强安全性并减小传输的数据量。
+
+3. 数据转换：DTO 还可以用于数据转换，将不同格式或结构的数据转换为其他格式，以满足客户端或服务的需求。在这里，CreateMap<Product, AddProductDto>() 和 CreateMap<AddProductDto, Product>() 是用于自动执行对象之间的映射。
+
+综上所述，定义两个差不多相同的类用于映射的目的是为了更好地组织和管理数据，并在不同层之间传输和转换数据，同时减少耦合度和提高代码的可维护性。这是一种常见的软件设计实践，特别在使用 ORM 或需要数据传输的应用程序中。
+
 ### 命名约定
 
 AutoMapper 基于相同的字段名映射，并且是 **不区分大小写** 的。
@@ -262,13 +278,13 @@ var configuration = new MapperConfiguration(cfg => cfg.CreateMap(typeof(Source<>
 
 ## Autofac 框架
 
-AutoFac 是一个.NET平台上的依赖注入（DI）容器和服务定位器，也是.net 下比较流行的实现依赖注入的工具之一。它的主要作用是管理应用程序中的组件依赖关系，确保组件（类、接口等）能够以一种松耦合的方式协同工作。
+AutoFac 是一个.NET 平台上的依赖注入（DI）容器和服务定位器，也是.net 下比较流行的实现依赖注入的工具之一。它的主要作用是管理应用程序中的组件依赖关系，确保组件（类、接口等）能够以一种松耦合的方式协同工作。
 
-Autofac IOC 依赖注入方式和生命周期以及Autofac配置文件配置IOC属性注入
+Autofac IOC 依赖注入方式和生命周期以及 Autofac 配置文件配置 IOC 属性注入
 
-Autofac IOC 依赖注入方式：构造函数(默认)，属性，方法，属性(1、接口实现类的属性注入，2、Controller控制器中的属性注入)
+Autofac IOC 依赖注入方式：构造函数(默认)，属性，方法，属性(1、接口实现类的属性注入，2、Controller 控制器中的属性注入)
 
-Autofac IOC 生命周期以 ：瞬态(InstancePerDependency)，单例(SingleInstance)，作用域(InstancePerLifetimeScope)，作用域(标志)(InstancePerMatchingLifetimeScope("标志")), 请求(PerRequest)等
+Autofac IOC 生命周期以  ：瞬态(InstancePerDependency)，单例(SingleInstance)，作用域(InstancePerLifetimeScope)，作用域(标志)(InstancePerMatchingLifetimeScope("标志")), 请求(PerRequest)等
 
 应用的基本流程如下:
 
@@ -343,14 +359,16 @@ public class DefaultController : ControllerBase
 
 ### 在项目中实操：
 
-1. appsetting.json添加本地数据库
+1. appsetting.json 添加本地数据库
+
 ```javascript
   "ConnectionStrings": {
     "Default": "server=localhost;userid=root;password=123456;database=smart_faq;Allow User Variables=True;"
   },
 ```
 
-2. 建立一个ConnectionString的类，通过这个类去寻找appsetting里面的数据库配置
+2. 建立一个 ConnectionString 的类，通过这个类去寻找 appsetting 里面的数据库配置
+
 ```javascript
 using Microsoft.Extensions.Configuration;
 
@@ -362,12 +380,13 @@ public class ConnectionString : IConfigurationSetting<string>
     {
         Value = configuration.GetConnectionString("Default");
     }
-    
+
     public string Value { get; set; }
 }
 ```
 
-3. 在DbContext这里引用ConnectionString，如果MySqlServerVersion报错，注意要安装Pomelo.EntityFrameworkCore.MySql依赖
+3. 在 DbContext 这里引用 ConnectionString，如果 MySqlServerVersion 报错，注意要安装 Pomelo.EntityFrameworkCore.MySql 依赖
+
 ```javascript
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
@@ -400,13 +419,14 @@ public class PractiseForTracyDbContext : DbContext, IUnitOfWork
                     modelBuilder.Model.AddEntityType(x);
             });
     }
-    
+
     public bool ShouldSaveChanges { get; set; }
 }
 
 ```
 
-4. 在program加入autofac的引用，因为后续用到autofac配置依赖
+4. 在 program 加入 autofac 的引用，因为后续用到 autofac 配置依赖
+
 ```javascript
 using Autofac.Extensions.DependencyInjection;
 
@@ -425,7 +445,8 @@ public class Program
 }
 ```
 
-5. 在startup文件中引用PractiseForTracyModule使用依赖配置
+5. 在 startup 文件中引用 PractiseForTracyModule 使用依赖配置
+
 ```javascript
 public void ConfigureContainer(ContainerBuilder builder)
     {
@@ -433,7 +454,8 @@ public void ConfigureContainer(ContainerBuilder builder)
     }
 ```
 
-6. 上面的在startup文件中用到PractiseForTracyModule，所以要建立了module，利用autofac来配置
+6. 上面的在 startup 文件中用到 PractiseForTracyModule，所以要建立了 module，利用 autofac 来配置
+
 ```javascript
 using System.Reflection;
 using Autofac;
@@ -516,7 +538,7 @@ public class PractiseForTracyModule : Module
         var settingTypes = typeof(PractiseForTracyModule).Assembly.GetTypes()
             .Where(t => t.IsClass && typeof(IConfigurationSetting).IsAssignableFrom(t))
             .ToArray();
-        
+
         builder.RegisterTypes(settingTypes).AsSelf().SingleInstance();
     }
 
