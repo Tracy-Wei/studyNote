@@ -22,7 +22,17 @@ BDD 的好处：
 
 BDD 整個包涵的範圍是從 PM 寫出 Story 開始到整個開發結束，而 TDD 只有從寫 Test case 開始到開發結束。
 
-Gherkin 標記語法：
+### Gherkin
+
+Gherkin 是自然语言测试的简单语法。
+
+一个完整的测试是由多个 step 组成的，step 即最小单元，如何复用 step 是非常关键的问题。
+
+多个 step 组成一个 Scenario，即一个完整的测试 case。
+
+多个 Scenario 组成一个 Feature，即一组相关的测试 case。
+
+#### Gherkin 標記語法：
 
 1. Feature
    用来描述我们需要测试的模块
@@ -38,3 +48,15 @@ Gherkin 標記語法：
    用于在给定上下文中进一步描述操作或断言。它可以连接到之前的任何步骤，扩展其内容。
 7. But
    类似于 "And"，但通常用于描述与之前步骤相反的情况。它也可以用于进一步描述操作或断言。
+8. Example（or Scenario）
+   某一个场景的具体入参和期望
+
+[Fact] Execute() 方法：这是一个 XUnit 测试方法，用于执行整个测试类。它使用 BDDfy 框架来运行测试方法，将测试结果输出为 BDD 风格的报告。
+
+AA.shouldBe()：断言方法，通常用于单元测试框架中，用于比较实际值和期望值是否相等，如果相等，测试通过，如果不相等，测试失败。
+
+> 例如：XXX.shouldBe(4)：预期 XXX 中有 4 个项目，也可以说是项数是否为 4，如果不是这样，测试将失败。
+
+AA.ShouldBeGreaterThan 是一个断言方法，通常在测试代码中使用。这个方法用于比较两个数值，确保第一个数值大于第二个数值。
+
+AA.ShouldNotBeNull(): AA 的值不能为 null。
