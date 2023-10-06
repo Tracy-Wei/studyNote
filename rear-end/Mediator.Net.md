@@ -385,7 +385,7 @@ Message Contract 确保不同服务之间的消息格式和内容是一致的，
 
 ----
 
-步骤参考查阅了:lizzie学习笔记 [link3]
+步骤参考查阅了:[lizzie学习笔记][link3]
 
 [1]: https://github.com/mayuanyang/Mediator.Net
 [2]: #
