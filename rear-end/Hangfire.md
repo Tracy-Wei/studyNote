@@ -46,4 +46,7 @@ RecurringJob.AddOrUpdate(() => Console.WriteLine("Recurring!"), Cron.Daily);
 BackgroundJob.ContinueWith(jobId, () => Console.WriteLine("Continuation!"));
 ```
 
+![image](https://github.com/Tracy-Wei/studyNote/assets/109784975/8d757c72-8295-4320-8f37-8d1193217932)
+
+
 [1]: https://docs.hangfire.io/en/latest/getting-started/aspnet-core-applications.html
