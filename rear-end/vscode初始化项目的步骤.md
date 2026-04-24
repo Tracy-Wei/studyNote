@@ -1,5 +1,3 @@
-用户只是要整理成 markdown 格式，不需要创建 docx 文件。直接输出 markdown 内容即可。
-
 ---
 
 # PractiseForTracy.net 构建指南
