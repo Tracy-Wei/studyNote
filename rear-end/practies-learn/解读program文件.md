@@ -1,6 +1,6 @@
 # 解读 Program 文件
 
-解读 `ConfigurationBuilder` 和 `Host` 的使用。
+解读 `ConfigurationBuilder` 和 `Host` 的使用。（⚠️注：自用留存底部引用的笔记作为副本来学习）
 
 ---
 

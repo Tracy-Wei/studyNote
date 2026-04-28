@@ -1,6 +1,6 @@
 # 解读 Startup 文件
 
-解读 `IServiceCollection`、`IApplicationBuilder` 和 `IWebHostEnvironment` 三个接口的使用。
+解读 `IServiceCollection`、`IApplicationBuilder` 和 `IWebHostEnvironment` 三个接口的使用。（⚠️注：自用留存底部引用的笔记作为副本来学习）
 
 ## 一. 代码解读
 
