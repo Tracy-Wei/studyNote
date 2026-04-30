@@ -128,6 +128,10 @@ public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 - `IsStaging()` — 判断当前应用程序是否处于暂存环境
 - `IsProduction()` — 判断当前应用程序是否处于生产环境
 
+### PractiseForTracyModule
+
+这里引用的是src/PractiseForTracy.Core/PractiseForTracyModule.cs构建的Module
+
 ---
 
 > 笔记来源：[CodeInterpreStartup.md](https://github.com/1sanqian/Learn-Project-Structure/blob/ride-doc-structuer-note/main/CodeInterpreStartup.md)

@@ -232,6 +232,8 @@ public void ConfigureContainer(ContainerBuilder builder)
 
 ### appsettings.json
 
+##### 设置连接数据库的配置：
+
 ```json
 {
   "ConnectionStrings": {
@@ -288,4 +290,22 @@ Mediator Pipeline
     │
     ▼
 HTTP Response (JSON)
+```
+
+---
+
+## 代码自动格式化配置
+
+1. 按下 `Command + Shift + P`，输入并选择 **Preferences: Open Settings (JSON)**
+2. 在字体设置中的`settings.json` 中添加以下配置：
+
+```json
+{
+  "editor.formatOnSave": true,
+
+  //最主要是这里
+  "[csharp]": {
+    "editor.defaultFormatter": "ms-dotnettools.csharp"
+  }
+}
 ```
